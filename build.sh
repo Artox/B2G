@@ -52,13 +52,19 @@ function configure_device() {
     return $?
 }
 
+# find make binary
+if [ -z "$MAKE" ]; then
+	MAKE=$(which make)
+	test $? -ne 0 && echo "ERROR: make not found!" && exit 1
+fi
+
 unset CDPATH
 . setup.sh &&
 if [ -f patches/patch.sh ] ; then
     . patches/patch.sh
 fi &&
 configure_device &&
-time nice -n19 make $MAKE_FLAGS $@
+time nice -n19 $MAKE $MAKE_FLAGS $@
 
 ret=$?
 echo -ne \\a
